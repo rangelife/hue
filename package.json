@@ -1,0 +1,17 @@
+{
+  "name": "homefucker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "rob@lundiehill.com",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2",
+    "huejay": "^1.8.0",
+    "node-hue-api": "^2.4.2",
+    "q": "^1.5.1"
+  }
+}
