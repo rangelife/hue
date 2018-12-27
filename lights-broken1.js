@@ -8,7 +8,7 @@ var displayResult = function(result) {
     console.log(JSON.stringify(result, null, 2));
 };
 
-var username = "08a902b95915cdd9b75547cb50892dc4",
+var username = "blah",
     api;
 
 hue.nupnpSearch()
