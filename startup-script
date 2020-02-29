@@ -19,12 +19,15 @@ case "$1" in
     echo "Starting hue"
     # run application you want to start
 	cd "__LOCATION__"
-	. /root/.nvm/nvm.sh && ./backend.js > /var/log/hue.log 2>/var/log/hue.err
+        . /etc/environment
+	. /root/.nvm/nvm.sh
+        node ./backend.js > /var/log/hue.log 2>/var/log/hue.err
+        echo $! > /var/log/hue.pid
     ;;
   stop)
     echo "Stopping hue"
     # kill application you want to stop
-    kill $(ps -ef | grep './backend.js'  | grep -v grep | awk '{print $2}')
+    kill $(cat /var/log/hue.pid)
     ;;
   *)
     echo "Usage: /etc/init.d/hue {start|stop}"
