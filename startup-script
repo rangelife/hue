@@ -19,8 +19,8 @@ case "$1" in
     echo "Starting hue"
     # run application you want to start
     cd "__LOCATION__"
-    . /etc/environment
-    node ./backend.js > /var/log/hue.log 2>/var/log/hue.err
+    export HUE_USERNAME=$(cat username.dat)
+    /usr/bin/node ./backend.js > /var/log/hue.log 2>/var/log/hue.err
     echo $! > /var/log/hue.pid
     ;;
   stop)

@@ -33,6 +33,9 @@ function log(str) {
 	console.log(new Date()+": "+str);
 }
 
+
+log("Started with user name "+username);
+
 let promise;
 if (ip) {
 	promise = Promise.resolve(ip);
