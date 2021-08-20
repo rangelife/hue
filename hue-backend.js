@@ -135,6 +135,7 @@ function boolifyActionParam(action) {
 	} else {
 		throw `invalid action specified: ${action}`
 	}
+	return action;
 }
 
 function allLights(action) {
