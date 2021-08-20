@@ -126,9 +126,9 @@ app.get('/room/:room/:action/result', function(req,res) {
 
 
 function boolifyActionParam(action) {
-	if (action == 'true') {
+	if (action == 'on') {
 		action = true;
-	} else if (action == 'false') {
+	} else if (action == 'off') {
 		action = false;
 	} else if (action == 'toggle') {
 		action = 'toggle';
