@@ -14,19 +14,12 @@ var appJWT=undefined;
 
 app.use("/", express.static('../frontend'));
 
-
 let huejay = require('huejay');
 
 let username = process.env.HUE_USERNAME;
 
 let ip;// = '192.168.0.6';
 
-let action;
-
-switch(process.argv[2]) {
-	case 'on': action=true; break;
-	case 'off': action=false; break;
-}
 let client;
 
 function log(str) {
@@ -113,6 +106,37 @@ app.get('/scene/:scene/result', function(req,res) {
 	res.status(200).send('Scene activated: '+req.params.scene);
 });
 
+app.get('/room/:room/:action', function(req,res) {
+	console.log(`room request - room: ${req.params.room}, action: ${req.params.action}`);
+
+	roomAction(req.params.room, req.params.action)
+	.then( (results) => {
+		log(`room ${req.params.room} - ${req.params.action} done`);
+		res.status(200).send(`<body onload="window.location.href='/room/${req.params.room}/${req.params.action}/result'">`);
+	})
+	.catch( function (err) {
+		console.error(err);
+		res.status(500).send({error: err});
+	});
+})
+
+app.get('/room/:room/:action/result', function(req,res) {
+	res.status(200).send(`room ${req.params.room} change applied: ${req.params.action}`);
+});
+
+
+function boolifyActionParam(action) {
+	if (action == 'true') {
+		action = true;
+	} else if (action == 'false') {
+		action = false;
+	} else if (action == 'toggle') {
+		action = 'toggle';
+	} else {
+		throw `invalid action specified: ${action}`
+	}
+}
+
 function allLights(action) {
 	return client.groups.getById(0)
 	.then(group => {
@@ -149,6 +173,30 @@ function scene(target) {
 	});
 }
 
+function roomAction(room,action) {
+	action = boolifyActionParam(action)
+
+	var actions=[];
+
+	return client.groups.getAll()
+	.then(groups => {
+	  	for (let group of groups) {
+			if (group.name !== room) {
+				continue;
+			}
+			if (action == 'toggle') {
+				action = !group.on
+				console.log(`toggling from ${group.on} to ${action}`);
+			}
+			console.log(`switching from ${group.on} to ${action}`);
+			group.on = action;
+			actions.push(client.groups.save(group));
+		}
+	})
+	.then( function (x) {
+		return Q.all(actions);
+	});
+}
 
 app.listen(HTTP_PORT, function () {
   console.log('Example app listening on port '+HTTP_PORT);
