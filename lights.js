@@ -176,13 +176,27 @@ promise.then( function (ip) {
       if (group.name !== "Main bedroom") {
         continue;
       }
+      let saveables=false;
       if (action == 'toggle') {
-        action = !group.on
-        console.log(`toggling from ${group.on} to ${action}`);
+        if (group.brightness != 254) {
+          group.brightness = 254;
+          group.on = true;
+          console.log(`toggling to full brightness`);
+        }
+        else {
+          action = !group.on
+          console.log(`toggling from ${group.on} to ${action}`);
+        }
+        group.on = action;
+        saveables=true;
       }
-      if (action !== undefined) {
+      else if (action !== undefined) {
         console.log(`switching from ${group.on} to ${action}`);
         group.on = action;
+        saveables=true;
+      }
+
+      if (saveables) {
         return client.groups.save(group).then( function (x) {
           console.log("saved");
         });

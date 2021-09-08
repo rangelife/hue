@@ -185,13 +185,34 @@ function roomAction(room,action) {
 			if (group.name !== room) {
 				continue;
 			}
+
+			let saveables=false;
 			if (action == 'toggle') {
+			  if (group.brightness != 254) {
+				group.brightness = 254;
+				group.on = true;
+				console.log(`toggling to full brightness`);
+			  }
+			  else {
 				action = !group.on
 				console.log(`toggling from ${group.on} to ${action}`);
+			  }
+			  group.on = action;
+			  saveables=true;
 			}
-			console.log(`switching from ${group.on} to ${action}`);
-			group.on = action;
-			actions.push(client.groups.save(group));
+			else if (action !== undefined) {
+			  console.log(`switching from ${group.on} to ${action}`);
+			  group.on = action;
+			  saveables=true;
+			}
+	  
+			if (saveables) {
+			  return client.groups.save(group).then( function (x) {
+				console.log("saved");
+			  });
+			}
+
+
 		}
 	})
 	.then( function (x) {
